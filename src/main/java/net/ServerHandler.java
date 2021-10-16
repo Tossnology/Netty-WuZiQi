@@ -21,7 +21,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg>{
         if (RoomServer.getInstance().getChannels().size() < 2) {
             System.out.println(ctx.channel().remoteAddress() + " 进入了房间");
             RoomServer.getInstance().getChannels().add(ctx.channel());
-            RoomServer.getInstance().getChannels().writeAndFlush(new JoinSuccessMsg(ctx.channel().remoteAddress().toString()));
+            for(Channel channel : RoomServer.getInstance().getChannels()) {
+                RoomServer.getInstance().getChannels().writeAndFlush(new JoinSuccessMsg(channel.remoteAddress().toString()));
+            }
             return;
         }
         System.out.println(ctx.channel().remoteAddress() + " 进入房间失败，房间已满！");

@@ -33,6 +33,7 @@ public class WuZiQiFrame extends Frame {
         this.addMouseListener(new MyMouseListener());
         this.setLayout(null);
         Button button = new Button("ready");
+        disableButton(button);
         button.setSize(80, 40);
         button.setLocation(650, 500);
         button.setVisible(true);
@@ -52,15 +53,29 @@ public class WuZiQiFrame extends Frame {
     }
 
     private void getOpponentAddress(Label label) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (gm.opponent.getAddress() != null) {
-                        label.setText("opponent: " + gm.opponent.getAddress());
-                    } else {
-                        label.setText("opponent: ");
-                    }
+        new Thread(() -> {
+            while (true) {
+                if (gm.opponent.getAddress() != null) {
+//                        System.out.println(1);
+                    label.setText("opponent: " + gm.opponent.getAddress());
+                } else {
+                    label.setText("opponent: ");
+                }
+            }
+        }).start();
+    }
+
+    private void disableButton(Button button) {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1);//不知道为啥要停一下才生效
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(gm.isGoing == 2)  {
+                    button.setEnabled(false);
+                    break;
                 }
             }
         }).start();
@@ -79,7 +94,7 @@ public class WuZiQiFrame extends Frame {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (!gm.isGoing) return;
+            if (gm.isGoing != 2) return;
             if ((gm.self.getGroup() == Group.WHITE && gm.turn % 2 == 0) || (gm.self.getGroup() == Group.BLACK && gm.turn % 2 == 1)) {
                 return;
             }
@@ -119,10 +134,13 @@ public class WuZiQiFrame extends Frame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+
             if(button.getLabel().equals("ready")) {
+                gm.isGoing++;
                 client.send(new ReadyMsg());
                 button.setLabel("cancel");
             } else {
+                gm.isGoing--;
                 client.send(new CancelReadyMsg());
                 button.setLabel("ready");
             }

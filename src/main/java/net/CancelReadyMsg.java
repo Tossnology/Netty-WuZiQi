@@ -1,5 +1,7 @@
 package net;
 
+import game.GameModel;
+
 public class CancelReadyMsg extends Msg{
     @Override
     public MsgType getMsgType() {
@@ -18,6 +20,6 @@ public class CancelReadyMsg extends Msg{
 
     @Override
     public void handle() {
-
+        GameModel.getInstance().isGoing--;
     }
 }

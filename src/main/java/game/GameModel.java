@@ -12,7 +12,7 @@ public class GameModel {
     public Player self = new Player();
     public Player opponent = new Player();
     int turn = 0;
-    boolean isGoing = false;
+    public int isGoing = 0;
 
     private GameModel() {
 
