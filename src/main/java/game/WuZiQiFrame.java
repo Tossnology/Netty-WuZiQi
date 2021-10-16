@@ -143,6 +143,7 @@ public class WuZiQiFrame extends Frame {
                 gm.isGoing--;
                 client.send(new CancelReadyMsg());
                 button.setLabel("ready");
+
             }
         }
     }
